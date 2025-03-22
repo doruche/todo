@@ -4,6 +4,7 @@ mod model;
 mod error;
 
 use axum::{extract::{Path, Query, State}, http::StatusCode, response::IntoResponse, routing::{get, patch}, Json, Router};
+use dotenvy::dotenv;
 use model::{ModelController, Pagination, PatchTodo, PostTodo};
 use serde_json::{json, Value};
 use tokio::net::TcpListener;
@@ -13,6 +14,8 @@ use crate::error::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    dotenv().map_err(|_| Error::EnvVarConfigError)?;
+
     let db = ModelController::new().await?;
 
     let app = Router::new()
